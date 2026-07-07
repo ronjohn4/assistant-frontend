@@ -24,3 +24,5 @@ def create_app(config_object=Config) -> Flask:
     app.register_blueprint(chat.bp)
 
     return app
+
+app = create_app()
