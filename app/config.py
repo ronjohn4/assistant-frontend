@@ -11,9 +11,9 @@ class Config:
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB max upload
     ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
-    # Configurable chatbot name (env: CHATBOT_NAME)
+    MAX_HISTORY_TURNS = int(os.environ.get("MAX_HISTORY_TURNS", 20))
+
     CHATBOT_NAME = os.environ.get("CHATBOT_NAME", "Riko")
-    # MODEL = os.environ.get("MODEL", "llama3.2")
     AGENT_URL = os.environ.get("AGENT_URL", "http://localhost:5010")
 
 

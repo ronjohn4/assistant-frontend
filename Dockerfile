@@ -1,5 +1,5 @@
 # Use official Python runtime as base image
-# docker build -t assistant-frontend .docker build -t assistant-frontend .
+# docker build -t ronjohn4/assistant-frontend .
 
 FROM python:3.12-slim
 
@@ -36,9 +36,9 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/.venv/bin:$PATH"
 
-EXPOSE 5001
+EXPOSE 5002
 
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 #     CMD curl --fail http://localhost/ || exit 1
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "--workers", "3", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5002", "--workers", "3", "app:app"]
