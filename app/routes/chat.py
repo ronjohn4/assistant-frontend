@@ -38,10 +38,8 @@ def _save_upload(file) -> str | None:
 def _process_message(request_text: str | None, image_filename: str | None) -> str:
     """Process user input with conversational context."""
     if request_text and request_text.strip():
-        # TODO - manage chat history in the UI then pass as part of the payload
         payload = {
             "query": request_text,
-            "history": [],
             "query-path": None,
             "response" : None,
             "response-path": None,  
@@ -51,10 +49,6 @@ def _process_message(request_text: str | None, image_filename: str | None) -> st
         if response.status_code == 200:
             # models return markdown, convert to html for display
             returned_text = strip_markdown.strip_markdown(response.text)
-            # TODO - make sure the answer is the correct text to pass here
-            # history.append_to_history(history.HUMAN_MESSAGE, request_text)
-            # history.append_to_history(history.AI_MESSAGE, returned_text)
-
             return returned_text
         else:
             return "An error occurred while processing your message."
@@ -101,10 +95,7 @@ def message():
 
     reply = _process_message(text, image_filename)
 
-    # TODO - get chat saying stuff
-    if reply and (text or image_filename) and request.form.get("speak"):
-        threading.Thread(target=speak, args=("Test Reply",), daemon=True).start()
-    #     threading.Thread(target=speak, args=(reply.content,), daemon=True).start()
+    threading.Thread(target=speak, args=(reply,), daemon=True).start()
 
     if request.headers.get("HX-Request"):
         resp = make_response(

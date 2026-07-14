@@ -13,17 +13,19 @@ ENV UV_LINK_MODE=copy
 # Working directory
 WORKDIR /app
 
+# Install build dependencies first (needed for compilation)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    python3-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy project dependency metadata for layer cache
 COPY pyproject.toml uv.lock ./
 
 # Install python dependencies using uv
 RUN uv venv --python /usr/local/bin/python && uv sync --locked --no-dev --no-install-project
-
-# Install system packages including nginx
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
 
 # Install gunicorn and ensure operating environment uses uv venv
 RUN uv pip install gunicorn
