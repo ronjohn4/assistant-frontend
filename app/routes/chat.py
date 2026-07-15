@@ -7,17 +7,13 @@ from flask_htmx import make_response
 from werkzeug.utils import secure_filename
 import requests
 import strip_markdown
-import json
+from unidecode import unidecode
 
 from app.config import Config
 from app.config import allowed_file
 from app.utilities.say import speak
-# from app.utilities.chathistory import ChatHistory
 
 bp = Blueprint("chat", __name__)
-
-# history = ChatHistory()
-
 
 def _save_upload(file) -> str | None:
     """Save uploaded image; return stored filename (for URL) or None."""
@@ -49,7 +45,12 @@ def _process_message(request_text: str | None, image_filename: str | None) -> st
         if response.status_code == 200:
             # models return markdown, convert to html for display
             returned_text = strip_markdown.strip_markdown(response.text)
-            return returned_text
+            returned_text = returned_text.strip()
+
+            clean_unicode_text = unidecode(returned_text)
+            clean_escape_text = clean_unicode_text.encode('utf-8').decode('unicode_escape') 
+
+            return clean_escape_text
         else:
             return "An error occurred while processing your message."
         
@@ -95,7 +96,14 @@ def message():
 
     reply = _process_message(text, image_filename)
 
-    threading.Thread(target=speak, args=(reply,), daemon=True).start()
+    # TODO - The reply may be long and have bulleted lists.
+    # It should ask if the deeper response should be spoken.
+    # TODO - need to terminate the say() processing if another say() action takes place.
+
+    first_sentence = reply.split('.', 1)[0].strip() + '.'
+    if first_sentence != reply:
+        first_sentence = first_sentence + "  Shortened."
+    threading.Thread(target=speak, args=(first_sentence,), daemon=True).start()
 
     if request.headers.get("HX-Request"):
         resp = make_response(
