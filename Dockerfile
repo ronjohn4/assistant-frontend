@@ -19,6 +19,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     python3-dev \
     curl \
+    espeak \
+    alsa-utils \
+    ffmpeg \
+    libasound2-dev \
+    espeak-ng-data \
+    speech-dispatcher \
+    speech-dispatcher-espeak \
+    espeak-ng \
+    libespeak1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy project dependency metadata for layer cache
