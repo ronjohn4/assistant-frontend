@@ -11,7 +11,7 @@ from unidecode import unidecode
 
 from app.config import Config
 from app.config import allowed_file
-from app.utilities.say import speak, speak_dummy, dummy_espeak
+from app.utilities.say import speak
 import re
 
 bp = Blueprint("chat", __name__)
@@ -155,15 +155,5 @@ def say_test():
         threading.Thread(target=speak, args=("Test 1,2,3",), daemon=True).start()
     except Exception as e:
         current_app.logger.debug(f"message() say Exception 1")
-
-    try:  
-        threading.Thread(target=speak_dummy, args=("Dummy 1,2,3",), daemon=True).start()
-    except Exception as e:
-        current_app.logger.debug(f"message() say Exception 2")
-
-    try:
-        threading.Thread(target=dummy_espeak, args=("E Speak 1,2,3",), daemon=True).start()
-    except Exception as e:
-        current_app.logger.debug(f"message() say Exception 3")
 
     return "OK", 200
