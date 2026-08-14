@@ -133,7 +133,8 @@ def message():
         resp = make_response(
             render_template(
                 "partials/bot_message.html",
-                bot_message=reply,
+                # responses occasionally have non utf-8 characters
+                bot_message=reply.encode('utf-8', errors='ignore').decode('utf-8'),
                 chatbot_name=current_app.config["CHATBOT_NAME"],
             )
         )
@@ -144,16 +145,5 @@ def message():
         resp.headers["HX-Reswap"] = "outerHTML"
         resp.headers["HX-Trigger-After-Swap"] = "focus-input"
         return resp
-
-    return "OK", 200
-
-
-@bp.route("/say", methods=["POST"])
-def say_test():
-    current_app.logger.debug(f"message() say")
-    try:
-        threading.Thread(target=speak, args=("Test 1,2,3",), daemon=True).start()
-    except Exception as e:
-        current_app.logger.debug(f"message() say Exception 1")
 
     return "OK", 200
